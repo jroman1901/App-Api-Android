@@ -1,0 +1,15 @@
+info:
+  name: post
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:3000/tareas
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+​

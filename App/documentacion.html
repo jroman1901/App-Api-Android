@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentación — AppApi Android (Tareas)</title>
+  <style>
+    :root {
+      --primary: #6750A4;
+      --primary-light: #EADDFF;
+      --secondary: #625B71;
+      --surface: #FFFBFE;
+      --surface2: #F3EDF7;
+      --on-surface: #1C1B1F;
+      --green: #1B8A4D;
+      --green-bg: #D6F5E7;
+      --red: #B3261E;
+      --red-bg: #FFDAD6;
+      --blue: #0055CC;
+      --blue-bg: #DBEAFE;
+      --orange: #B5451B;
+      --orange-bg: #FDECD8;
+      --code-bg: #1E1E2E;
+      --code-fg: #CDD6F4;
+      --step-border: #CAC4D0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--surface);
+      color: var(--on-surface);
+      line-height: 1.65;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, #9C4FD9 100%);
+      color: white;
+      padding: 48px 40px 40px;
+    }
+    header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    header h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 10px; }
+    header p { font-size: 1.05rem; opacity: 0.88; max-width: 640px; }
+    .meta-row {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      margin-top: 24px; font-size: 0.85rem; opacity: 0.85;
+    }
+    .meta-row span { display: flex; align-items: center; gap: 6px; }
+
+    /* LAYOUT */
+    .container { max-width: 1020px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav {
+      background: white;
+      border-bottom: 1px solid #E7E0EC;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(103,80,164,0.08);
+    }
+    nav ul {
+      display: flex; flex-wrap: wrap; list-style: none;
+      gap: 0; max-width: 1020px; margin: 0 auto; padding: 0 24px;
+    }
+    nav ul li a {
+      display: block; padding: 14px 16px;
+      text-decoration: none; color: var(--secondary);
+      font-size: 0.88rem; font-weight: 500;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    nav ul li a:hover { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* SECTIONS */
+    section { padding: 52px 0 16px; }
+    section + section { border-top: 1px solid #E7E0EC; padding-top: 48px; }
+
+    .section-header { margin-bottom: 28px; }
+    .section-header .section-number {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--primary); color: white;
+      font-weight: 700; font-size: 1rem; margin-bottom: 10px;
+    }
+    .section-header h2 { font-size: 1.75rem; color: var(--primary); font-weight: 700; }
+    .section-header p { color: var(--secondary); margin-top: 6px; font-size: 0.97rem; }
+
+    /* CARDS */
+    .card {
+      background: white;
+      border: 1px solid #E7E0EC;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; color: var(--primary); }
+
+    /* STEP CARDS */
+    .step-card {
+      background: white;
+      border: 1px solid var(--step-border);
+      border-left: 5px solid var(--primary);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .step-card .step-label {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--primary); font-weight: 700; margin-bottom: 6px;
+    }
+    .step-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+    .step-card p { color: #49454F; margin-bottom: 10px; }
+
+    /* CODE */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      border-radius: 12px;
+      padding: 20px 22px;
+      overflow-x: auto;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      margin: 16px 0;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+    code {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.85em;
+      font-family: monospace;
+    }
+    pre code { background: none; color: inherit; padding: 0; border-radius: 0; font-size: inherit; }
+
+    /* SYNTAX HIGHLIGHT (simple) */
+    .kw  { color: #CBA6F7; }   /* keyword purple */
+    .str { color: #A6E3A1; }   /* string green */
+    .cmt { color: #6C7086; font-style: italic; } /* comment */
+    .fn  { color: #89B4FA; }   /* function blue */
+    .ann { color: #FAB387; }   /* annotation orange */
+    .num { color: #FAB387; }   /* number */
+    .cls { color: #F38BA8; }   /* class/type */
+    .op  { color: #89DCEB; }   /* operator */
+
+    /* CALLOUTS */
+    .callout {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 16px 20px; border-radius: 12px; margin: 16px 0;
+    }
+    .callout .icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .callout p { margin: 0; font-size: 0.93rem; }
+    .callout.info    { background: var(--blue-bg); }
+    .callout.warning { background: var(--orange-bg); }
+    .callout.success { background: var(--green-bg); }
+    .callout.danger  { background: var(--red-bg); }
+
+    /* GRID */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ARCHITECTURE DIAGRAM */
+    .arch-diagram {
+      background: white;
+      border: 2px solid #E7E0EC;
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      margin: 24px 0;
+    }
+    .arch-layer {
+      display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+      margin: 8px 0;
+    }
+    .arch-box {
+      padding: 10px 20px; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 600; min-width: 140px; text-align: center;
+    }
+    .arch-box.ui       { background: var(--blue-bg); color: var(--blue); border: 2px solid #93C5FD; }
+    .arch-box.state    { background: var(--green-bg); color: var(--green); border: 2px solid #6EE7B7; }
+    .arch-box.network  { background: var(--orange-bg); color: var(--orange); border: 2px solid #FCD34D; }
+    .arch-box.model    { background: var(--primary-light); color: var(--primary); border: 2px solid #C4B5FD; }
+    .arch-arrow {
+      display: flex; justify-content: center; margin: 6px 0;
+      color: var(--secondary); font-size: 1.3rem;
+    }
+    .arch-label {
+      font-size: 0.75rem; color: var(--secondary);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 6px; font-weight: 600;
+    }
+
+    /* FILE TREE */
+    .file-tree {
+      background: #1E1E2E;
+      color: #CDD6F4;
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+    .file-tree .dir  { color: #89B4FA; font-weight: bold; }
+    .file-tree .file { color: #CDD6F4; }
+    .file-tree .key  { color: #A6E3A1; font-weight: bold; }
+    .file-tree .cmt  { color: #6C7086; }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th {
+      background: var(--primary); color: white;
+      padding: 12px 16px; text-align: left; font-size: 0.88rem;
+    }
+    th:first-child { border-radius: 8px 0 0 0; }
+    th:last-child { border-radius: 0 8px 0 0; }
+    td { padding: 11px 16px; border-bottom: 1px solid #E7E0EC; font-size: 0.88rem; }
+    tr:nth-child(even) td { background: #FAFAFA; }
+    tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+    tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+    .method { display: inline-block; padding: 3px 10px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; }
+    .method.get    { background: var(--green-bg); color: var(--green); }
+    .method.post   { background: var(--blue-bg); color: var(--blue); }
+    .method.put    { background: var(--orange-bg); color: var(--orange); }
+    .method.delete { background: var(--red-bg); color: var(--red); }
+
+    /* FLOW */
+    .flow-list { list-style: none; padding: 0; }
+    .flow-list li {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px dashed #E7E0EC;
+    }
+    .flow-list li:last-child { border-bottom: none; }
+    .flow-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--on-surface); color: rgba(255,255,255,0.7);
+      text-align: center; padding: 32px; margin-top: 60px;
+      font-size: 0.85rem;
+    }
+    footer strong { color: white; }
+
+    ul.list { padding-left: 22px; }
+    ul.list li { margin-bottom: 6px; }
+    ol.list  { padding-left: 22px; }
+    ol.list li { margin-bottom: 8px; }
+
+    .tag {
+      display: inline-block; background: var(--primary-light); color: var(--primary);
+      padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+      margin: 3px 2px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ====== HEADER ====== -->
+<header>
+  <div class="container">
+    <div class="badge">Documentacion Tecnica</div>
+    <h1>AppApi — Gestor de Tareas Android</h1>
+    <p>Guia paso a paso de como esta construida la aplicacion Android en Kotlin + Jetpack Compose para consumir una API REST de tareas.</p>
+    <div class="meta-row">
+      <span>&#128187; Kotlin + Jetpack Compose</span>
+      <span>&#128279; Retrofit2 + OkHttp3</span>
+      <span>&#127758; API REST (localhost:3000)</span>
+      <span>&#128274; Android minSdk 24</span>
+      <span>&#128197; 2026</span>
+    </div>
+  </div>
+</header>
+
+<!-- ====== NAV ====== -->
+<nav>
+  <ul>
+    <li><a href="#arquitectura">Arquitectura</a></li>
+    <li><a href="#estructura">Estructura</a></li>
+    <li><a href="#dependencias">Dependencias</a></li>
+    <li><a href="#paso1">Modelo</a></li>
+    <li><a href="#paso2">API Client</a></li>
+    <li><a href="#paso3">UI</a></li>
+    <li><a href="#paso4">Manifest</a></li>
+    <li><a href="#flujo">Flujo</a></li>
+    <li><a href="#endpoints">Endpoints</a></li>
+    <li><a href="#errores">Errores</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+<!-- ====== OVERVIEW ====== -->
+<section>
+  <div class="section-header">
+    <div class="section-number">&#9733;</div>
+    <h2>Resumen del Proyecto</h2>
+    <p>Una app Android nativa que consume una API REST CRUD de tareas alojada en un servidor local.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>&#127919; Funcionalidades</h3>
+      <ul class="list">
+        <li>Listar todas las tareas desde la API</li>
+        <li>Crear nuevas tareas (titulo + descripcion)</li>
+        <li>Marcar tareas como completadas (toggle)</li>
+        <li>Eliminar tareas con un solo toque</li>
+        <li>Indicador de carga (spinner) durante peticiones</li>
+        <li>Manejo de errores con Toast</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>&#128295; Stack Tecnologico</h3>
+      <ul class="list">
+        <li><strong>Lenguaje:</strong> Kotlin 2.0.21</li>
+        <li><strong>UI:</strong> Jetpack Compose + Material 3</li>
+        <li><strong>HTTP:</strong> Retrofit 2.11.0</li>
+        <li><strong>Cliente HTTP:</strong> OkHttp3 4.12.0</li>
+        <li><strong>JSON:</strong> Gson (Retrofit converter)</li>
+        <li><strong>Concurrencia:</strong> Kotlin Coroutines</li>
+        <li><strong>Build:</strong> Gradle 8.13 (KTS)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====== ARQUITECTURA ====== -->
+<section id="arquitectura">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <h2>Arquitectura General</h2>
+    <p>La app sigue un patron simple de una sola Activity con estado reactivo manejado por Compose.</p>
+  </div>
+
+  <div class="arch-diagram">
+    <div class="arch-label">Capa de Presentacion (UI)</div>
+    <div class="arch-layer">
+      <div class="arch-box ui">MainActivity</div>
+      <div class="arch-box ui">TareaScreen (Composable)</div>
+      <div class="arch-box ui">TareaItem (Composable)</div>
+    </div>
+
+    <div class="arch-arrow">&#8597; Estado reactivo (remember / mutableStateOf)</div>
+
+    <div class="arch-label">Capa de Estado</div>
+    <div class="arch-layer">
+      <div class="arch-box state">tareas: List&lt;Tarea&gt;</div>
+      <div class="arch-box state">isLoading: Boolean</div>
+      <div class="arch-box state">titulo / descripcion: String</div>
+    </div>
+
+    <div class="arch-arrow">&#8597; Coroutines (suspend functions)</div>
+
+    <div class="arch-label">Capa de Red</div>
+    <div class="arch-layer">
+      <div class="arch-box network">TareaApi (Interface Retrofit)</div>
+      <div class="arch-box network">OkHttpClient + Logger</div>
+    </div>
+
+    <div class="arch-arrow">&#8595; HTTP/JSON via red</div>
+
+    <div class="arch-label">Backend (externo)</div>
+    <div class="arch-layer">
+      <div class="arch-box model">API REST Node.js/Express</div>
+      <div class="arch-box model">http://10.0.2.2:3000</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="icon">&#128161;</div>
+    <p><strong>10.0.2.2</strong> es la IP especial del emulador Android para acceder al <code>localhost</code> de la maquina host. En un dispositivo fisico se usaria la IP de la red local (ej. <code>192.168.x.x</code>).</p>
+  </div>
+</section>
+
+<!-- ====== ESTRUCTURA ====== -->
+<section id="estructura">
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <h2>Estructura de Archivos</h2>
+    <p>Solo 3 archivos Kotlin de negocio mas la configuracion de Gradle y el Manifest.</p>
+  </div>
+
+  <div class="file-tree">
+<span class="dir">AppApi/</span><br>
+├── <span class="dir">app/</span><br>
+│   ├── <span class="file">build.gradle.kts</span>          <span class="cmt"># dependencias del modulo</span><br>
+│   └── <span class="dir">src/main/</span><br>
+│       ├── <span class="key">AndroidManifest.xml</span>    <span class="cmt"># permisos INTERNET + cleartext</span><br>
+│       └── <span class="dir">java/com/umg/appapi/</span><br>
+│           ├── <span class="key">Tarea.kt</span>              <span class="cmt"># data class (modelo de datos)</span><br>
+│           ├── <span class="key">TareaApi.kt</span>           <span class="cmt"># interfaz Retrofit + factory</span><br>
+│           ├── <span class="key">MainActivity.kt</span>       <span class="cmt"># UI Compose + logica de negocio</span><br>
+│           └── <span class="dir">ui/theme/</span><br>
+│               ├── <span class="file">Color.kt</span><br>
+│               ├── <span class="file">Theme.kt</span>          <span class="cmt"># Material 3 dinamico</span><br>
+│               └── <span class="file">Type.kt</span><br>
+├── <span class="dir">gradle/</span><br>
+│   └── <span class="key">libs.versions.toml</span>        <span class="cmt"># version catalog (todas las versiones)</span><br>
+└── <span class="file">settings.gradle.kts</span>
+  </div>
+</section>
+
+<!-- ====== DEPENDENCIAS ====== -->
+<section id="dependencias">
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <h2>Dependencias (Version Catalog)</h2>
+    <p>Todas las versiones se definen en <code>gradle/libs.versions.toml</code> y se referencian en <code>build.gradle.kts</code>.</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Archivo: gradle/libs.versions.toml</div>
+    <h3>Version Catalog</h3>
+    <p>Centraliza las versiones y evita duplicados entre modulos. Gradle 8+ lo recomienda como estandar.</p>
+    <pre><span class="cmt"># gradle/libs.versions.toml</span>
+
+<span class="ann">[versions]</span>
+<span class="fn">agp</span>                  = <span class="str">"8.13.2"</span>
+<span class="fn">kotlin</span>               = <span class="str">"2.0.21"</span>
+<span class="fn">coreKtx</span>              = <span class="str">"1.18.0"</span>
+<span class="fn">lifecycleRuntimeKtx</span>  = <span class="str">"2.10.0"</span>
+<span class="fn">activityCompose</span>      = <span class="str">"1.13.0"</span>
+<span class="fn">composeBom</span>           = <span class="str">"2024.09.00"</span>
+<span class="fn">retrofit</span>             = <span class="str">"2.11.0"</span>
+<span class="fn">okhttp</span>               = <span class="str">"4.12.0"</span>
+
+<span class="ann">[libraries]</span>
+<span class="cmt"># Core Android</span>
+<span class="fn">androidx-core-ktx</span>    = { group = <span class="str">"androidx.core"</span>,       name = <span class="str">"core-ktx"</span>,          version.ref = <span class="str">"coreKtx"</span>  }
+<span class="fn">androidx-lifecycle-runtime-ktx</span> = { group = <span class="str">"androidx.lifecycle"</span>, name = <span class="str">"lifecycle-runtime-ktx"</span> }
+
+<span class="cmt"># Compose</span>
+<span class="fn">androidx-compose-bom</span>      = { group = <span class="str">"androidx.compose"</span>,    name = <span class="str">"compose-bom"</span>      }
+<span class="fn">androidx-compose-material3</span> = { group = <span class="str">"androidx.compose.material3"</span>, name = <span class="str">"material3"</span> }
+
+<span class="cmt"># Red: Retrofit + OkHttp</span>
+<span class="fn">retrofit</span>       = { group = <span class="str">"com.squareup.retrofit2"</span>, name = <span class="str">"retrofit"</span>,          version.ref = <span class="str">"retrofit"</span> }
+<span class="fn">retrofit-gson</span>  = { group = <span class="str">"com.squareup.retrofit2"</span>, name = <span class="str">"converter-gson"</span>,   version.ref = <span class="str">"retrofit"</span> }
+<span class="fn">okhttp-logging</span> = { group = <span class="str">"com.squareup.okhttp3"</span>,  name = <span class="str">"logging-interceptor"</span>, version.ref = <span class="str">"okhttp"</span>  }
+
+<span class="ann">[plugins]</span>
+<span class="fn">android-application</span> = { id = <span class="str">"com.android.application"</span>,         version.ref = <span class="str">"agp"</span>    }
+<span class="fn">kotlin-android</span>      = { id = <span class="str">"org.jetbrains.kotlin.android"</span>,    version.ref = <span class="str">"kotlin"</span> }
+<span class="fn">kotlin-compose</span>      = { id = <span class="str">"org.jetbrains.kotlin.plugin.compose"</span>, version.ref = <span class="str">"kotlin"</span> }</pre>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Archivo: app/build.gradle.kts</div>
+    <h3>Configuracion del modulo app</h3>
+    <p>Define compileSdk, minSdk, habilita Jetpack Compose y declara las dependencias.</p>
+    <pre><span class="cmt">// app/build.gradle.kts</span>
+<span class="fn">plugins</span> {
+    alias(libs.plugins.<span class="fn">android.application</span>)
+    alias(libs.plugins.<span class="fn">kotlin.android</span>)
+    alias(libs.plugins.<span class="fn">kotlin.compose</span>)    <span class="cmt">// Compiler plugin de Compose</span>
+}
+
+<span class="fn">android</span> {
+    namespace    = <span class="str">"com.umg.appapi"</span>
+    compileSdk   = <span class="num">36</span>
+
+    <span class="fn">defaultConfig</span> {
+        applicationId = <span class="str">"com.umg.appapi"</span>
+        minSdk        = <span class="num">24</span>   <span class="cmt">// Android 7.0+</span>
+        targetSdk     = <span class="num">36</span>
+        versionCode   = <span class="num">1</span>
+        versionName   = <span class="str">"1.0"</span>
+    }
+
+    <span class="fn">buildFeatures</span> { compose = <span class="kw">true</span> }  <span class="cmt">// Activa Jetpack Compose</span>
+}
+
+<span class="fn">dependencies</span> {
+    <span class="cmt">// BOM fija versiones compatibles de todas las libs Compose</span>
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material3)
+
+    <span class="cmt">// Red</span>
+    implementation(libs.<span class="fn">retrofit</span>)          <span class="cmt">// HTTP client declarativo</span>
+    implementation(libs.<span class="fn">retrofit.gson</span>)     <span class="cmt">// Deserializacion JSON -> Kotlin</span>
+    implementation(libs.<span class="fn">okhttp.logging</span>)    <span class="cmt">// Logs de peticiones en Logcat</span>
+}</pre>
+  </div>
+
+  <table>
+    <tr>
+      <th>Libreria</th>
+      <th>Version</th>
+      <th>Para que sirve</th>
+    </tr>
+    <tr>
+      <td><code>retrofit2:retrofit</code></td>
+      <td>2.11.0</td>
+      <td>Convierte interfaces Kotlin en llamadas HTTP automaticamente</td>
+    </tr>
+    <tr>
+      <td><code>retrofit2:converter-gson</code></td>
+      <td>2.11.0</td>
+      <td>Serializa/deserializa JSON &#8596; data classes Kotlin</td>
+    </tr>
+    <tr>
+      <td><code>okhttp3:logging-interceptor</code></td>
+      <td>4.12.0</td>
+      <td>Muestra request/response completos en Logcat para debug</td>
+    </tr>
+    <tr>
+      <td><code>compose-bom</code></td>
+      <td>2024.09.00</td>
+      <td>Bill of Materials: alinea versiones de todas las libs Compose</td>
+    </tr>
+    <tr>
+      <td><code>material3</code></td>
+      <td>via BOM</td>
+      <td>Componentes UI: Card, Button, TextField, Scaffold, etc.</td>
+    </tr>
+    <tr>
+      <td><code>lifecycle-runtime-ktx</code></td>
+      <td>2.10.0</td>
+      <td>Coroutines + lifecycle awareness</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ====== PASO 1: MODELO ====== -->
+<section id="paso1">
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <h2>Paso 1 — Modelo de Datos: <code>Tarea.kt</code></h2>
+    <p>Define la estructura JSON que la API envia y recibe, mapeada a una data class Kotlin.</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Archivo clave</div>
+    <h3>Tarea.kt — Data class</h3>
+    <p>Representa una tarea tal como la API la devuelve. Usa <code>@SerializedName</code> para mapear el campo JSON <code>completada</code> (Int 0/1 de MySQL) a una propiedad Kotlin.</p>
+    <pre><span class="kw">package</span> com.umg.appapi
+
+<span class="kw">import</span> com.google.gson.annotations.<span class="cls">SerializedName</span>
+
+<span class="kw">data class</span> <span class="cls">Tarea</span>(
+    <span class="kw">val</span> id: <span class="cls">Int</span>? = <span class="kw">null</span>,             <span class="cmt">// null al CREAR (lo asigna la BD)</span>
+    <span class="kw">val</span> titulo: <span class="cls">String</span>,              <span class="cmt">// requerido</span>
+    <span class="kw">val</span> descripcion: <span class="cls">String</span>? = <span class="str">""</span>,   <span class="cmt">// opcional</span>
+    <span class="ann">@SerializedName</span>(<span class="str">"completada"</span>)    <span class="cmt">// nombre del campo en el JSON</span>
+    <span class="kw">val</span> completadaInt: <span class="cls">Int</span> = <span class="num">0</span>       <span class="cmt">// 0=pendiente, 1=completada (MySQL TINYINT)</span>
+) {
+    <span class="cmt">// Propiedad calculada: convierte Int -> Boolean para la UI</span>
+    <span class="kw">val</span> completada: <span class="cls">Boolean</span> <span class="kw">get</span>() = completadaInt == <span class="num">1</span>
+}</pre>
+  </div>
+
+  <div class="grid-2">
+    <div class="callout warning">
+      <div class="icon">&#9888;</div>
+      <p><strong>Por que Int y no Boolean?</strong> MySQL almacena booleanos como <code>TINYINT(1)</code> (0/1). Si se usa <code>Boolean</code> directamente, Gson puede fallar al deserializar dependiendo de la API. El campo <code>completadaInt: Int</code> es 100% seguro y compatible.</p>
+    </div>
+    <div class="callout info">
+      <div class="icon">&#128161;</div>
+      <p><strong>@SerializedName</strong> indica a Gson que el campo JSON se llama <code>"completada"</code> pero en Kotlin lo guardamos como <code>completadaInt</code> para evitar conflictos con la propiedad calculada <code>completada: Boolean</code>.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Ejemplo de JSON de la API</h3>
+    <pre>{
+  <span class="str">"id"</span>:          <span class="num">1</span>,
+  <span class="str">"titulo"</span>:       <span class="str">"Estudiar Kotlin"</span>,
+  <span class="str">"descripcion"</span>: <span class="str">"Repasar coroutines"</span>,
+  <span class="str">"completada"</span>:  <span class="num">0</span>           <span class="cmt">// 0=false, 1=true</span>
+}</pre>
+  </div>
+</section>
+
+<!-- ====== PASO 2: API CLIENT ====== -->
+<section id="paso2">
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <h2>Paso 2 — Cliente HTTP: <code>TareaApi.kt</code></h2>
+    <p>Define los endpoints con anotaciones Retrofit y construye el cliente HTTP con OkHttp.</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Archivo clave</div>
+    <h3>TareaApi.kt — Interface + Factory</h3>
+    <p>Retrofit lee las anotaciones (<code>@GET</code>, <code>@POST</code>, etc.) e implementa automaticamente la interfaz generando el codigo HTTP.</p>
+    <pre><span class="kw">package</span> com.umg.appapi
+
+<span class="kw">import</span> okhttp3.<span class="cls">OkHttpClient</span>
+<span class="kw">import</span> okhttp3.logging.<span class="cls">HttpLoggingInterceptor</span>
+<span class="kw">import</span> retrofit2.<span class="cls">Retrofit</span>
+<span class="kw">import</span> retrofit2.converter.gson.<span class="cls">GsonConverterFactory</span>
+<span class="kw">import</span> retrofit2.http.*
+
+<span class="kw">interface</span> <span class="cls">TareaApi</span> {
+
+    <span class="ann">@GET</span>(<span class="str">"tareas"</span>)
+    <span class="kw">suspend fun</span> <span class="fn">getTareas</span>(): <span class="cls">List</span>&lt;<span class="cls">Tarea</span>&gt;
+
+    <span class="ann">@GET</span>(<span class="str">"tareas/{id}"</span>)
+    <span class="kw">suspend fun</span> <span class="fn">getTarea</span>(<span class="ann">@Path</span>(<span class="str">"id"</span>) id: <span class="cls">Int</span>): <span class="cls">Tarea</span>
+
+    <span class="ann">@POST</span>(<span class="str">"tareas"</span>)
+    <span class="kw">suspend fun</span> <span class="fn">createTarea</span>(<span class="ann">@Body</span> tarea: <span class="cls">Tarea</span>): <span class="cls">Tarea</span>
+
+    <span class="ann">@PUT</span>(<span class="str">"tareas/{id}"</span>)
+    <span class="kw">suspend fun</span> <span class="fn">updateTarea</span>(<span class="ann">@Path</span>(<span class="str">"id"</span>) id: <span class="cls">Int</span>, <span class="ann">@Body</span> tarea: <span class="cls">Tarea</span>): <span class="cls">Tarea</span>
+
+    <span class="ann">@DELETE</span>(<span class="str">"tareas/{id}"</span>)
+    <span class="kw">suspend fun</span> <span class="fn">deleteTarea</span>(<span class="ann">@Path</span>(<span class="str">"id"</span>) id: <span class="cls">Int</span>)
+
+    <span class="kw">companion object</span> {
+        <span class="cmt">// IP especial del emulador para acceder al localhost del host</span>
+        <span class="kw">private const val</span> BASE_URL = <span class="str">"http://10.0.2.2:3000/"</span>
+
+        <span class="kw">fun</span> <span class="fn">create</span>(): <span class="cls">TareaApi</span> {
+            <span class="cmt">// 1. Interceptor que loguea request y response en Logcat</span>
+            <span class="kw">val</span> logger = <span class="cls">HttpLoggingInterceptor</span>().apply {
+                level = <span class="cls">HttpLoggingInterceptor</span>.Level.BODY
+            }
+
+            <span class="cmt">// 2. OkHttpClient con el interceptor adjunto</span>
+            <span class="kw">val</span> client = <span class="cls">OkHttpClient</span>.Builder()
+                .addInterceptor(logger)
+                .build()
+
+            <span class="cmt">// 3. Retrofit con base URL, cliente y conversor JSON</span>
+            <span class="kw">return</span> <span class="cls">Retrofit</span>.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(<span class="cls">GsonConverterFactory</span>.create())
+                .build()
+                .create(<span class="cls">TareaApi</span>::<span class="kw">class</span>.java)  <span class="cmt">// implementacion automatica</span>
+        }
+    }
+}</pre>
+  </div>
+
+  <div class="card">
+    <h3>Anotaciones Retrofit explicadas</h3>
+    <table>
+      <tr><th>Anotacion</th><th>Donde se usa</th><th>Que hace</th></tr>
+      <tr><td><code>@GET("tareas")</code></td><td>Funcion</td><td>Peticion GET a <code>BASE_URL + "tareas"</code></td></tr>
+      <tr><td><code>@POST("tareas")</code></td><td>Funcion</td><td>Peticion POST con cuerpo JSON</td></tr>
+      <tr><td><code>@PUT("tareas/{id}")</code></td><td>Funcion</td><td>Peticion PUT, el <code>{id}</code> es un parametro de ruta</td></tr>
+      <tr><td><code>@DELETE("tareas/{id}")</code></td><td>Funcion</td><td>Peticion DELETE por ID</td></tr>
+      <tr><td><code>@Path("id")</code></td><td>Parametro</td><td>Sustituye <code>{id}</code> en la URL con el valor real</td></tr>
+      <tr><td><code>@Body</code></td><td>Parametro</td><td>Serializa el objeto Kotlin a JSON y lo envia en el body</td></tr>
+    </table>
+  </div>
+
+  <div class="callout success">
+    <div class="icon">&#9989;</div>
+    <p><strong>suspend fun</strong>: Todas las funciones son <code>suspend</code>, lo que permite llamarlas dentro de una coroutine sin bloquear el hilo principal de Android (UI thread). Retrofit con Kotlin las ejecuta en un hilo I/O automaticamente.</p>
+  </div>
+</section>
+
+<!-- ====== PASO 3: UI ====== -->
+<section id="paso3">
+  <div class="section-header">
+    <div class="section-number">6</div>
+    <h2>Paso 3 — Interfaz de Usuario: <code>MainActivity.kt</code></h2>
+    <p>Toda la UI esta escrita en Jetpack Compose. MainActivity inicializa la API y delega el renderizado a composables.</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Componente 1 de 3</div>
+    <h3>MainActivity — Entry point</h3>
+    <p>Crea la instancia de <code>TareaApi</code> una sola vez y monta el tema de la aplicacion.</p>
+    <pre><span class="kw">class</span> <span class="cls">MainActivity</span> : <span class="cls">ComponentActivity</span>() {
+    <span class="cmt">// La API se crea UNA SOLA VEZ al crear la Activity</span>
+    <span class="kw">private val</span> api = <span class="cls">TareaApi</span>.<span class="fn">create</span>()
+
+    <span class="kw">override fun</span> <span class="fn">onCreate</span>(savedInstanceState: <span class="cls">Bundle</span>?) {
+        <span class="kw">super</span>.<span class="fn">onCreate</span>(savedInstanceState)
+        <span class="fn">enableEdgeToEdge</span>()          <span class="cmt">// extiende el contenido bajo la barra de sistema</span>
+        <span class="fn">setContent</span> {
+            <span class="cls">AppApiTheme</span> {            <span class="cmt">// aplica Material 3 dinamico</span>
+                <span class="cls">Scaffold</span>(modifier = Modifier.<span class="fn">fillMaxSize</span>()) { innerPadding ->
+                    <span class="fn">TareaScreen</span>(api, Modifier.<span class="fn">padding</span>(innerPadding))
+                }
+            }
+        }
+    }
+}</pre>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Componente 2 de 3</div>
+    <h3>TareaScreen — Pantalla principal</h3>
+    <p>Gestiona el estado de la lista, el formulario y las operaciones CRUD. Es el corazon de la UI.</p>
+    <pre><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">TareaScreen</span>(api: <span class="cls">TareaApi</span>, modifier: <span class="cls">Modifier</span> = Modifier) {
+    <span class="kw">val</span> scope    = <span class="fn">rememberCoroutineScope</span>()   <span class="cmt">// scope vinculado al ciclo de vida</span>
+    <span class="kw">val</span> context  = <span class="fn">LocalContext</span>.current
+
+    <span class="cmt">// --- ESTADO REACTIVO ---</span>
+    <span class="kw">var</span> tareas      <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="fn">emptyList</span>&lt;<span class="cls">Tarea</span>&gt;()) }
+    <span class="kw">var</span> titulo      <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+    <span class="kw">var</span> descripcion <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+    <span class="kw">var</span> isLoading   <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="kw">false</span>) }
+
+    <span class="cmt">// --- FUNCION LOCAL: carga tareas de la API ---</span>
+    <span class="kw">fun</span> <span class="fn">cargarTareas</span>() {
+        scope.<span class="fn">launch</span> {
+            isLoading = <span class="kw">true</span>
+            <span class="kw">try</span> {
+                tareas = api.<span class="fn">getTareas</span>()   <span class="cmt">// coroutine: no bloquea UI</span>
+            } <span class="kw">catch</span> (e: <span class="cls">Exception</span>) {
+                <span class="cls">Toast</span>.<span class="fn">makeText</span>(context, <span class="str">"Error: ${e.message}"</span>, Toast.LENGTH_LONG).<span class="fn">show</span>()
+            } <span class="kw">finally</span> {
+                isLoading = <span class="kw">false</span>
+            }
+        }
+    }
+
+    <span class="cmt">// Carga automatica al montar el composable (equivale a onCreate)</span>
+    <span class="fn">LaunchedEffect</span>(<span class="cls">Unit</span>) { <span class="fn">cargarTareas</span>() }
+
+    <span class="cls">Column</span>(modifier = modifier.<span class="fn">padding</span>(<span class="num">16</span>.dp)) {
+        <span class="cmt">// --- FORMULARIO NUEVA TAREA ---</span>
+        <span class="cls">Text</span>(<span class="str">"Nueva Tarea"</span>, style = MaterialTheme.typography.headlineSmall)
+        <span class="cls">OutlinedTextField</span>(value = titulo,      onValueChange = { titulo = it },      label = { <span class="cls">Text</span>(<span class="str">"Titulo"</span>) })
+        <span class="cls">OutlinedTextField</span>(value = descripcion, onValueChange = { descripcion = it }, label = { <span class="cls">Text</span>(<span class="str">"Descripcion"</span>) })
+
+        <span class="cls">Button</span>(onClick = {
+            <span class="kw">if</span> (titulo.isBlank()) <span class="kw">return</span>@Button
+            scope.<span class="fn">launch</span> {
+                api.<span class="fn">createTarea</span>(<span class="cls">Tarea</span>(titulo = titulo, descripcion = descripcion))
+                <span class="fn">cargarTareas</span>()       <span class="cmt">// refresca la lista</span>
+                titulo = <span class="str">""</span>; descripcion = <span class="str">""</span>
+            }
+        }) { <span class="cls">Text</span>(<span class="str">"Agregar"</span>) }
+
+        <span class="cmt">// --- LISTA DE TAREAS ---</span>
+        <span class="cls">LazyColumn</span> {
+            <span class="fn">items</span>(tareas) { tarea ->
+                <span class="fn">TareaItem</span>(
+                    tarea    = tarea,
+                    onDelete = { scope.<span class="fn">launch</span> { api.<span class="fn">deleteTarea</span>(tarea.id!!); <span class="fn">cargarTareas</span>() } },
+                    onToggle = {
+                        scope.<span class="fn">launch</span> {
+                            <span class="kw">val</span> actualizada = tarea.<span class="fn">copy</span>(completadaInt = <span class="kw">if</span> (tarea.completada) <span class="num">0</span> <span class="kw">else</span> <span class="num">1</span>)
+                            api.<span class="fn">updateTarea</span>(tarea.id!!, actualizada)
+                            <span class="fn">cargarTareas</span>()
+                        }
+                    }
+                )
+            }
+        }
+    }
+}</pre>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Componente 3 de 3</div>
+    <h3>TareaItem — Tarjeta individual</h3>
+    <p>Composable "tonto" (stateless): solo recibe datos y callbacks. Muestra checkbox, titulo, descripcion e icono de borrar.</p>
+    <pre><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">TareaItem</span>(tarea: <span class="cls">Tarea</span>, onDelete: () -> <span class="cls">Unit</span>, onToggle: () -> <span class="cls">Unit</span>) {
+    <span class="cls">Card</span>(modifier = Modifier.<span class="fn">fillMaxWidth</span>().<span class="fn">padding</span>(vertical = <span class="num">4</span>.dp)) {
+        <span class="cls">Row</span>(modifier = Modifier.<span class="fn">padding</span>(<span class="num">16</span>.dp), verticalAlignment = Alignment.CenterVertically) {
+            <span class="cls">Checkbox</span>(checked = tarea.completada, onCheckedChange = { <span class="fn">onToggle</span>() })
+            <span class="cls">Column</span>(modifier = Modifier.<span class="fn">weight</span>(<span class="num">1f</span>)) {
+                <span class="cls">Text</span>(tarea.titulo,            style = MaterialTheme.typography.titleMedium)
+                <span class="cls">Text</span>(tarea.descripcion ?: <span class="str">""</span>, style = MaterialTheme.typography.bodySmall)
+            }
+            <span class="cls">IconButton</span>(onClick = onDelete) {
+                <span class="cls">Icon</span>(Icons.Default.Delete, contentDescription = <span class="str">"Eliminar"</span>)
+            }
+        }
+    }
+}</pre>
+  </div>
+
+  <div class="callout info">
+    <div class="icon">&#128161;</div>
+    <p><strong>Patron Hoisting:</strong> <code>TareaItem</code> no tiene estado propio. El estado sube (<em>hoists</em>) al padre <code>TareaScreen</code>, haciendo el componente reutilizable y testeable. Cuando el usuario toca Checkbox o Delete, llama a los callbacks <code>onToggle</code>/<code>onDelete</code>.</p>
+  </div>
+</section>
+
+<!-- ====== PASO 4: MANIFEST ====== -->
+<section id="paso4">
+  <div class="section-header">
+    <div class="section-number">7</div>
+    <h2>Paso 4 — AndroidManifest.xml</h2>
+    <p>Declara los permisos necesarios para conectarse a la red y permite trafico HTTP sin cifrar.</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">Archivo: AndroidManifest.xml</div>
+    <h3>Permisos y configuracion de red</h3>
+    <pre><span class="op">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="fn">&lt;manifest</span> xmlns:android=<span class="str">"http://schemas.android.com/apk/res/android"</span><span class="fn">&gt;</span>
+
+    <span class="cmt">&lt;!-- Permite al app hacer peticiones HTTP --&gt;</span>
+    <span class="fn">&lt;uses-permission</span> android:name=<span class="str">"android.permission.INTERNET"</span> <span class="fn">/&gt;</span>
+
+    <span class="fn">&lt;application</span>
+        android:usesCleartextTraffic=<span class="str">"true"</span>   <span class="cmt">&lt;!-- Permite HTTP (no solo HTTPS) --&gt;</span>
+        android:theme=<span class="str">"@style/Theme.AppApi"</span><span class="fn">&gt;</span>
+
+        <span class="fn">&lt;activity</span>
+            android:name=<span class="str">".MainActivity"</span>
+            android:exported=<span class="str">"true"</span><span class="fn">&gt;</span>
+            <span class="fn">&lt;intent-filter&gt;</span>
+                <span class="fn">&lt;action</span> android:name=<span class="str">"android.intent.action.MAIN"</span> <span class="fn">/&gt;</span>
+                <span class="fn">&lt;category</span> android:name=<span class="str">"android.intent.category.LAUNCHER"</span> <span class="fn">/&gt;</span>
+            <span class="fn">&lt;/intent-filter&gt;</span>
+        <span class="fn">&lt;/activity&gt;</span>
+    <span class="fn">&lt;/application&gt;</span>
+<span class="fn">&lt;/manifest&gt;</span></pre>
+  </div>
+
+  <div class="grid-2">
+    <div class="callout danger">
+      <div class="icon">&#9888;</div>
+      <p><strong>INTERNET:</strong> Sin este permiso la app lanza <code>SecurityException</code> al intentar cualquier peticion de red. Es obligatorio.</p>
+    </div>
+    <div class="callout warning">
+      <div class="icon">&#128272;</div>
+      <p><strong>usesCleartextTraffic=true:</strong> Android 9+ bloquea HTTP por defecto. Como el backend corre en HTTP (no HTTPS) se necesita esta bandera. En produccion se debe usar HTTPS.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FLUJO ====== -->
+<section id="flujo">
+  <div class="section-header">
+    <div class="section-number">8</div>
+    <h2>Flujo de Ejecucion Completo</h2>
+    <p>Como interactuan todos los componentes desde que el usuario abre la app hasta ver la lista.</p>
+  </div>
+
+  <div class="card">
+    <h3>Carga inicial de tareas</h3>
+    <ul class="flow-list">
+      <li>
+        <div class="flow-dot">1</div>
+        <div><strong>App inicia</strong> — <code>MainActivity.onCreate()</code> es llamado. Crea una instancia de <code>TareaApi</code> via <code>TareaApi.create()</code>. Monta el tema y el <code>Scaffold</code>.</div>
+      </li>
+      <li>
+        <div class="flow-dot">2</div>
+        <div><strong>TareaScreen se compone</strong> — Jetpack Compose ejecuta la funcion. Se crea el estado inicial: lista vacia, campos en blanco, <code>isLoading=false</code>.</div>
+      </li>
+      <li>
+        <div class="flow-dot">3</div>
+        <div><strong>LaunchedEffect(Unit)</strong> — Al aparecer por primera vez en pantalla, Compose lanza automaticamente la coroutine <code>cargarTareas()</code>.</div>
+      </li>
+      <li>
+        <div class="flow-dot">4</div>
+        <div><strong>isLoading = true</strong> — Compose re-renderiza y muestra el <code>CircularProgressIndicator</code> en la barra de titulo.</div>
+      </li>
+      <li>
+        <div class="flow-dot">5</div>
+        <div><strong>api.getTareas()</strong> — Retrofit construye la peticion <code>GET http://10.0.2.2:3000/tareas</code>. OkHttp la ejecuta en un hilo I/O. El hilo UI queda libre.</div>
+      </li>
+      <li>
+        <div class="flow-dot">6</div>
+        <div><strong>Respuesta JSON recibida</strong> — Gson deserializa el array JSON a <code>List&lt;Tarea&gt;</code>. La coroutine reanuda en el hilo principal.</div>
+      </li>
+      <li>
+        <div class="flow-dot">7</div>
+        <div><strong>tareas = resultado</strong> — El estado cambia. Compose detecta el cambio y re-renderiza la <code>LazyColumn</code> con todas las tarjetas.</div>
+      </li>
+      <li>
+        <div class="flow-dot">8</div>
+        <div><strong>isLoading = false</strong> — El spinner desaparece. La UI muestra la lista completa.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h3>Crear una tarea nueva</h3>
+    <ul class="flow-list">
+      <li>
+        <div class="flow-dot">1</div>
+        <div>Usuario escribe titulo y descripcion en los <code>OutlinedTextField</code>. El estado <code>titulo</code> y <code>descripcion</code> se actualiza en tiempo real.</div>
+      </li>
+      <li>
+        <div class="flow-dot">2</div>
+        <div>Toca el boton <strong>Agregar</strong>. Se valida que el titulo no este en blanco.</div>
+      </li>
+      <li>
+        <div class="flow-dot">3</div>
+        <div><code>scope.launch</code> inicia una coroutine. Llama a <code>api.createTarea(Tarea(...))</code> que hace <code>POST /tareas</code> con JSON en el body.</div>
+      </li>
+      <li>
+        <div class="flow-dot">4</div>
+        <div>La API responde con la tarea creada (incluyendo el <code>id</code> asignado por la BD).</div>
+      </li>
+      <li>
+        <div class="flow-dot">5</div>
+        <div>Se llama <code>cargarTareas()</code> para refrescar la lista. Los campos se limpian.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h3>Marcar como completada (toggle)</h3>
+    <ul class="flow-list">
+      <li>
+        <div class="flow-dot">1</div>
+        <div>Usuario toca el <code>Checkbox</code> de un <code>TareaItem</code>. Se dispara el callback <code>onToggle</code>.</div>
+      </li>
+      <li>
+        <div class="flow-dot">2</div>
+        <div>Se crea una copia de la tarea con <code>tarea.copy(completadaInt = if (tarea.completada) 0 else 1)</code>. Esto invierte el estado.</div>
+      </li>
+      <li>
+        <div class="flow-dot">3</div>
+        <div><code>api.updateTarea(tarea.id!!, actualizada)</code> hace <code>PUT /tareas/{id}</code> enviando el objeto actualizado.</div>
+      </li>
+      <li>
+        <div class="flow-dot">4</div>
+        <div>Se refresca la lista con <code>cargarTareas()</code>.</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ====== ENDPOINTS ====== -->
+<section id="endpoints">
+  <div class="section-header">
+    <div class="section-number">9</div>
+    <h2>Endpoints de la API</h2>
+    <p>La app consume una API REST con los siguientes endpoints. El servidor corre en <code>http://localhost:3000</code> (o <code>10.0.2.2:3000</code> desde el emulador).</p>
+  </div>
+
+  <table>
+    <tr>
+      <th>Metodo</th>
+      <th>Ruta</th>
+      <th>Funcion Kotlin</th>
+      <th>Descripcion</th>
+    </tr>
+    <tr>
+      <td><span class="method get">GET</span></td>
+      <td><code>/tareas</code></td>
+      <td><code>getTareas()</code></td>
+      <td>Retorna todas las tareas como array JSON</td>
+    </tr>
+    <tr>
+      <td><span class="method get">GET</span></td>
+      <td><code>/tareas/{id}</code></td>
+      <td><code>getTarea(id)</code></td>
+      <td>Retorna una tarea especifica por ID</td>
+    </tr>
+    <tr>
+      <td><span class="method post">POST</span></td>
+      <td><code>/tareas</code></td>
+      <td><code>createTarea(tarea)</code></td>
+      <td>Crea una nueva tarea. Body: JSON con titulo y descripcion</td>
+    </tr>
+    <tr>
+      <td><span class="method put">PUT</span></td>
+      <td><code>/tareas/{id}</code></td>
+      <td><code>updateTarea(id, tarea)</code></td>
+      <td>Actualiza una tarea (titulo, descripcion, estado)</td>
+    </tr>
+    <tr>
+      <td><span class="method delete">DELETE</span></td>
+      <td><code>/tareas/{id}</code></td>
+      <td><code>deleteTarea(id)</code></td>
+      <td>Elimina permanentemente una tarea</td>
+    </tr>
+  </table>
+
+  <div class="card" style="margin-top:20px">
+    <h3>Ejemplos de Request/Response</h3>
+    <p>Body para <strong>POST /tareas</strong>:</p>
+    <pre>{
+  <span class="str">"titulo"</span>:       <span class="str">"Leer documentacion"</span>,
+  <span class="str">"descripcion"</span>: <span class="str">"Revisar Retrofit y Compose"</span>,
+  <span class="str">"completada"</span>:  <span class="num">0</span>
+}</pre>
+    <p style="margin-top:16px">Body para <strong>PUT /tareas/1</strong> (marcar completada):</p>
+    <pre>{
+  <span class="str">"titulo"</span>:       <span class="str">"Leer documentacion"</span>,
+  <span class="str">"descripcion"</span>: <span class="str">"Revisar Retrofit y Compose"</span>,
+  <span class="str">"completada"</span>:  <span class="num">1</span>
+}</pre>
+  </div>
+</section>
+
+<!-- ====== ERRORES ====== -->
+<section id="errores">
+  <div class="section-header">
+    <div class="section-number">10</div>
+    <h2>Manejo de Errores y Debug</h2>
+    <p>La app tiene manejo de errores en todas las operaciones y logging HTTP para facilitar el debug.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="step-card">
+      <div class="step-label">Manejo de errores</div>
+      <h3>Try/Catch en cada operacion</h3>
+      <p>Cada llamada a la API esta envuelta en <code>try/catch</code>. Los errores se muestran al usuario con <code>Toast</code>.</p>
+      <pre><span class="kw">try</span> {
+    tareas = api.<span class="fn">getTareas</span>()
+} <span class="kw">catch</span> (e: <span class="cls">Exception</span>) {
+    <span class="cmt">// Error de red, timeout, 4xx, 5xx</span>
+    <span class="cls">Toast</span>.<span class="fn">makeText</span>(context,
+        <span class="str">"Error: ${e.message}"</span>,
+        Toast.LENGTH_LONG
+    ).<span class="fn">show</span>()
+} <span class="kw">finally</span> {
+    isLoading = <span class="kw">false</span>   <span class="cmt">// siempre oculta spinner</span>
+}</pre>
+    </div>
+    <div class="step-card">
+      <div class="step-label">Logging HTTP</div>
+      <h3>HttpLoggingInterceptor</h3>
+      <p>Con <code>Level.BODY</code> muestra en Logcat el request y response completos, incluyendo headers y body JSON.</p>
+      <pre><span class="kw">val</span> logger = <span class="cls">HttpLoggingInterceptor</span>().apply {
+    level = <span class="cls">HttpLoggingInterceptor</span>.Level.BODY
+}
+<span class="cmt">// Logcat → filtrar por "OkHttp"</span>
+<span class="cmt">// D/OkHttp: --> GET http://10.0.2.2:3000/tareas</span>
+<span class="cmt">// D/OkHttp: <-- 200 OK (120ms)</span>
+<span class="cmt">// D/OkHttp: [{"id":1,"titulo":...}]</span></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Causas comunes de error y solucion</h3>
+    <table>
+      <tr><th>Error</th><th>Causa</th><th>Solucion</th></tr>
+      <tr>
+        <td><code>ConnectException</code></td>
+        <td>El servidor no esta corriendo</td>
+        <td>Iniciar el servidor Node.js en el host (<code>node index.js</code>)</td>
+      </tr>
+      <tr>
+        <td><code>CLEARTEXT not permitted</code></td>
+        <td>Falta <code>usesCleartextTraffic</code></td>
+        <td>Agregar en AndroidManifest: <code>android:usesCleartextTraffic="true"</code></td>
+      </tr>
+      <tr>
+        <td>Lista vacia / no conecta</td>
+        <td>IP incorrecta en emulador</td>
+        <td>Usar <code>10.0.2.2</code> (no <code>localhost</code> ni <code>127.0.0.1</code>)</td>
+      </tr>
+      <tr>
+        <td><code>JsonSyntaxException</code></td>
+        <td>JSON no coincide con data class</td>
+        <td>Verificar nombres de campos con <code>@SerializedName</code></td>
+      </tr>
+      <tr>
+        <td><code>404 Not Found</code></td>
+        <td>BASE_URL incorrecta</td>
+        <td>BASE_URL debe terminar en <code>/</code> y NO incluir "tareas"</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ====== TEMA ====== -->
+<section>
+  <div class="section-header">
+    <div class="section-number">11</div>
+    <h2>Tema Visual — Material 3</h2>
+    <p>La app usa Material 3 con color dinamico (Dynamic Color) disponible en Android 12+.</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-label">ui/theme/Theme.kt</div>
+    <h3>AppApiTheme</h3>
+    <p>Detecta si el sistema esta en modo oscuro y si el dispositivo soporta colores dinamicos (Monet, Android 12+).</p>
+    <pre><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">AppApiTheme</span>(
+    darkTheme: <span class="cls">Boolean</span> = <span class="fn">isSystemInDarkTheme</span>(),
+    dynamicColor: <span class="cls">Boolean</span> = <span class="kw">true</span>,         <span class="cmt">// Android 12+ toma colores del wallpaper</span>
+    content: <span class="ann">@Composable</span> () -> <span class="cls">Unit</span>
+) {
+    <span class="kw">val</span> colorScheme = <span class="kw">when</span> {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            <span class="kw">if</span> (darkTheme) <span class="fn">dynamicDarkColorScheme</span>(context)
+            <span class="kw">else</span>           <span class="fn">dynamicLightColorScheme</span>(context)
+        }
+        darkTheme -> DarkColorScheme
+        <span class="kw">else</span>      -> LightColorScheme
+    }
+    <span class="cls">MaterialTheme</span>(colorScheme = colorScheme, typography = Typography, content = content)
+}</pre>
+  </div>
+
+  <div class="grid-2">
+    <div class="callout success">
+      <div class="icon">&#127775;</div>
+      <p>En <strong>Android 12+</strong>, el color primario de la app se adapta automaticamente al color del fondo de pantalla del usuario (sistema Monet de Google). No requiere cambios de codigo.</p>
+    </div>
+    <div class="callout info">
+      <div class="icon">&#127761;</div>
+      <p>En <strong>Android 11 y anteriores</strong>, se usa el esquema de colores estatico definido en <code>Color.kt</code> (purpura como primario, siguiendo las guias de Material You).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== RESUMEN FINAL ====== -->
+<section>
+  <div class="section-header">
+    <div class="section-number">&#10003;</div>
+    <h2>Resumen: Que necesitas para correr el proyecto</h2>
+  </div>
+
+  <div class="card">
+    <h3>Requisitos previos</h3>
+    <ol class="list">
+      <li><strong>Android Studio</strong> (Hedgehog o superior)</li>
+      <li><strong>Emulador Android</strong> con API Level 24+ (o dispositivo fisico)</li>
+      <li><strong>Servidor API</strong> corriendo en tu maquina en el puerto <code>3000</code> con los endpoints <code>/tareas</code></li>
+      <li>El servidor debe aceptar <strong>HTTP</strong> (no solo HTTPS) ya que la app usa cleartext traffic</li>
+    </ol>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Pasos para ejecutar</h3>
+    <ol class="list">
+      <li>Inicia el servidor de la API en tu PC (<code>node server.js</code> o equivalente)</li>
+      <li>Abre el proyecto en Android Studio</li>
+      <li>Verifica que <code>BASE_URL = "http://10.0.2.2:3000/"</code> en <code>TareaApi.kt</code></li>
+      <li>Corre la app en el emulador (<code>Run > Run 'app'</code>)</li>
+      <li>La lista de tareas deberia cargarse automaticamente</li>
+    </ol>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Tecnologias usadas — Resumen</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      <span class="tag">Kotlin 2.0.21</span>
+      <span class="tag">Jetpack Compose</span>
+      <span class="tag">Material 3</span>
+      <span class="tag">Retrofit 2.11</span>
+      <span class="tag">OkHttp 4.12</span>
+      <span class="tag">Gson</span>
+      <span class="tag">Kotlin Coroutines</span>
+      <span class="tag">Gradle KTS 8.13</span>
+      <span class="tag">Version Catalog</span>
+      <span class="tag">Edge to Edge</span>
+    </div>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<footer>
+  <strong>AppApi — Gestor de Tareas Android</strong><br>
+  Documentacion generada automaticamente &bull; Universidad Mariano Galvez (UMG) &bull; 2026
+</footer>
+
+</body>
+</html>

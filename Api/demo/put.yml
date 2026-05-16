@@ -1,0 +1,22 @@
+info:
+  name: put
+  type: http
+
+http:
+  method: PUT
+  url: http://localhost:3000/tareas/1
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Tarea actualizada",
+        "descripcion": "Nueva descripción",
+        "completada": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

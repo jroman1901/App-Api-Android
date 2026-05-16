@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guia: Crear una API REST con Node.js y MySQL</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1f2e, #2d3561);
+      padding: 48px 24px;
+      text-align: center;
+      border-bottom: 2px solid #3b4fd8;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 1.05rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #3b4fd8;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-top: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    main {
+      max-width: 860px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .step {
+      background: #1e2330;
+      border: 1px solid #2a3042;
+      border-radius: 12px;
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: #252b3b;
+      border-bottom: 1px solid #2a3042;
+    }
+
+    .step-number {
+      background: #3b4fd8;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-header h2 {
+      font-size: 1.1rem;
+      color: #ffffff;
+    }
+
+    .step-body {
+      padding: 22px 24px;
+    }
+
+    .step-body p {
+      color: #94a3b8;
+      margin-bottom: 16px;
+    }
+
+    .step-body ul {
+      color: #94a3b8;
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    .step-body ul li {
+      margin-bottom: 6px;
+    }
+
+    .step-body ul li strong {
+      color: #cbd5e1;
+    }
+
+    /* Bloque de codigo sin copiar */
+    .code-block {
+      position: relative;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      margin: 16px 0;
+      overflow: hidden;
+    }
+
+    .code-label {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 8px 16px;
+      font-size: 0.75rem;
+      color: #8b949e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .code-label span.dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green { background: #28c840; }
+
+    .no-copy-notice {
+      background: #2d1b00;
+      border: 1px solid #7c4a00;
+      color: #f59e0b;
+      font-size: 0.75rem;
+      padding: 6px 14px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    pre {
+      padding: 20px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #e6edf3;
+
+      /* Bloquear seleccion y copia */
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      pointer-events: none;
+    }
+
+    /* Colores de sintaxis manual */
+    .k  { color: #ff7b72; }   /* keyword */
+    .s  { color: #a5d6ff; }   /* string */
+    .c  { color: #8b949e; font-style: italic; } /* comment */
+    .f  { color: #d2a8ff; }   /* function */
+    .v  { color: #79c0ff; }   /* variable */
+    .n  { color: #ffa657; }   /* number / method */
+    .p  { color: #e6edf3; }   /* punctuation */
+
+    .cmd {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #3fb950;
+      margin: 12px 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+    }
+
+    .cmd::before {
+      content: '$ ';
+      color: #8b949e;
+    }
+
+    .info-box {
+      background: #0c1a2e;
+      border-left: 4px solid #3b4fd8;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      color: #93c5fd;
+      font-size: 0.9rem;
+    }
+
+    .warning-box {
+      background: #1c1300;
+      border-left: 4px solid #f59e0b;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      color: #fbbf24;
+      font-size: 0.9rem;
+    }
+
+    .endpoint-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.88rem;
+    }
+
+    .endpoint-table th {
+      background: #252b3b;
+      color: #94a3b8;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .endpoint-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #2a3042;
+      color: #cbd5e1;
+    }
+
+    .method {
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .get    { background: #0a3622; color: #3fb950; }
+    .post   { background: #0c1a2e; color: #58a6ff; }
+    .put    { background: #2d1b00; color: #fbbf24; }
+    .delete { background: #2d0a0a; color: #f85149; }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #4a5568;
+      font-size: 0.85rem;
+      border-top: 1px solid #1e2330;
+    }
+
+    /* Overlay anti-copia sobre codigo */
+    .code-block {
+      position: relative;
+    }
+
+    .code-block::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Crear una API REST con Node.js y MySQL</h1>
+  <p>Guia paso a paso para construir una API de gestion de tareas</p>
+  <span class="badge">Escribe el codigo — no lo copies</span>
+</header>
+
+<main>
+
+  <!-- Intro -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">0</div>
+      <h2>Que vamos a construir</h2>
+    </div>
+    <div class="step-body">
+      <p>Vamos a crear una API REST completa con <strong>Node.js</strong>, <strong>Express</strong> y <strong>MySQL</strong> que permita gestionar tareas (CRUD).</p>
+      <table class="endpoint-table">
+        <thead>
+          <tr>
+            <th>Metodo</th>
+            <th>Ruta</th>
+            <th>Descripcion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="method get">GET</span></td><td>/tareas</td><td>Obtener todas las tareas</td></tr>
+          <tr><td><span class="method get">GET</span></td><td>/tareas/:id</td><td>Obtener una tarea por ID</td></tr>
+          <tr><td><span class="method post">POST</span></td><td>/tareas</td><td>Crear una nueva tarea</td></tr>
+          <tr><td><span class="method put">PUT</span></td><td>/tareas/:id</td><td>Actualizar una tarea</td></tr>
+          <tr><td><span class="method delete">DELETE</span></td><td>/tareas/:id</td><td>Eliminar una tarea</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Paso 1 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">1</div>
+      <h2>Requisitos previos</h2>
+    </div>
+    <div class="step-body">
+      <p>Antes de comenzar, asegurate de tener instalado lo siguiente en tu computadora:</p>
+      <ul>
+        <li><strong>Node.js</strong> — version 18 o superior. Descargalo en nodejs.org</li>
+        <li><strong>MySQL</strong> — version 8. Puedes usar XAMPP o MySQL Workbench</li>
+        <li><strong>Un editor de codigo</strong> — recomendamos Visual Studio Code</li>
+      </ul>
+      <p>Verifica que Node.js esta instalado abriendo una terminal y ejecutando:</p>
+      <div class="cmd">node --version</div>
+      <div class="cmd">npm --version</div>
+      <p>Si ambos comandos muestran un numero de version, estas listo para continuar.</p>
+    </div>
+  </div>
+
+  <!-- Paso 2 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">2</div>
+      <h2>Crear la base de datos en MySQL</h2>
+    </div>
+    <div class="step-body">
+      <p>Abre MySQL Workbench o tu cliente de MySQL y ejecuta el siguiente SQL para crear la base de datos y la tabla de tareas:</p>
+      <div class="no-copy-notice">
+        &#9888; El codigo debe escribirse a mano — la copia esta desactivada
+      </div>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          script.sql
+        </div>
+        <pre>
+<span class="k">CREATE DATABASE</span> <span class="v">db_tareas</span><span class="p">;</span>
+
+<span class="k">USE</span> <span class="v">db_tareas</span><span class="p">;</span>
+
+<span class="k">CREATE TABLE</span> <span class="v">tareas</span> <span class="p">(</span>
+  <span class="v">id</span>          <span class="n">INT</span> <span class="k">AUTO_INCREMENT PRIMARY KEY</span><span class="p">,</span>
+  <span class="v">titulo</span>      <span class="n">VARCHAR</span><span class="p">(</span><span class="n">100</span><span class="p">)</span> <span class="k">NOT NULL</span><span class="p">,</span>
+  <span class="v">descripcion</span> <span class="n">TEXT</span><span class="p">,</span>
+  <span class="v">completada</span>  <span class="n">BOOLEAN</span> <span class="k">DEFAULT</span> <span class="n">false</span>
+<span class="p">);</span></pre>
+      </div>
+      <div class="info-box">
+        La columna <strong>id</strong> se incrementa automaticamente. <strong>completada</strong> empieza en false por defecto.
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 3 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">3</div>
+      <h2>Inicializar el proyecto Node.js</h2>
+    </div>
+    <div class="step-body">
+      <p>Crea una carpeta para tu proyecto y abrela en la terminal:</p>
+      <div class="cmd">mkdir api-tareas</div>
+      <div class="cmd">cd api-tareas</div>
+      <p>Inicializa el proyecto con npm para generar el archivo <strong>package.json</strong>:</p>
+      <div class="cmd">npm init -y</div>
+      <p>Ahora instala las dependencias que necesitamos:</p>
+      <div class="cmd">npm install express mysql2 dotenv</div>
+      <ul>
+        <li><strong>express</strong> — framework para crear el servidor HTTP</li>
+        <li><strong>mysql2</strong> — driver para conectarse a MySQL</li>
+        <li><strong>dotenv</strong> — para leer variables de entorno desde un archivo .env</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Paso 4 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">4</div>
+      <h2>Crear el archivo .env</h2>
+    </div>
+    <div class="step-body">
+      <p>Crea un archivo llamado <strong>.env</strong> en la raiz del proyecto. Este archivo guarda las credenciales de la base de datos sin exponerlas en el codigo.</p>
+      <div class="no-copy-notice">
+        &#9888; El codigo debe escribirse a mano — la copia esta desactivada
+      </div>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          .env
+        </div>
+        <pre>
+<span class="v">DB_HOST</span><span class="p">=</span><span class="s">localhost</span>
+<span class="v">DB_USER</span><span class="p">=</span><span class="s">root</span>
+<span class="v">DB_PASSWORD</span><span class="p">=</span><span class="s"></span>
+<span class="v">DB_NAME</span><span class="p">=</span><span class="s">db_tareas</span></pre>
+      </div>
+      <div class="warning-box">
+        Nunca subas el archivo .env a GitHub. Agrega <strong>.env</strong> a tu archivo <strong>.gitignore</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 5 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">5</div>
+      <h2>Crear la conexion a la base de datos — db.js</h2>
+    </div>
+    <div class="step-body">
+      <p>Crea el archivo <strong>db.js</strong> en la raiz del proyecto. Este modulo se encarga unicamente de conectarse a MySQL y exportar la conexion para usarla en otras partes del proyecto.</p>
+      <div class="no-copy-notice">
+        &#9888; El codigo debe escribirse a mano — la copia esta desactivada
+      </div>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          db.js
+        </div>
+        <pre>
+<span class="k">const</span> <span class="v">mysql</span> <span class="p">=</span> <span class="f">require</span><span class="p">(</span><span class="s">'mysql2'</span><span class="p">);</span>
+<span class="f">require</span><span class="p">(</span><span class="s">'dotenv'</span><span class="p">).</span><span class="f">config</span><span class="p">();</span>
+
+<span class="k">const</span> <span class="v">connection</span> <span class="p">=</span> <span class="v">mysql</span><span class="p">.</span><span class="f">createConnection</span><span class="p">({</span>
+  <span class="v">host</span><span class="p">:</span>     <span class="v">process</span><span class="p">.</span><span class="v">env</span><span class="p">.</span><span class="v">DB_HOST</span>     <span class="p">||</span> <span class="s">'localhost'</span><span class="p">,</span>
+  <span class="v">user</span><span class="p">:</span>     <span class="v">process</span><span class="p">.</span><span class="v">env</span><span class="p">.</span><span class="v">DB_USER</span>     <span class="p">||</span> <span class="s">'root'</span><span class="p">,</span>
+  <span class="v">password</span><span class="p">:</span> <span class="v">process</span><span class="p">.</span><span class="v">env</span><span class="p">.</span><span class="v">DB_PASSWORD</span> <span class="p">||</span> <span class="s">''</span><span class="p">,</span>
+  <span class="v">database</span><span class="p">:</span> <span class="v">process</span><span class="p">.</span><span class="v">env</span><span class="p">.</span><span class="v">DB_NAME</span>     <span class="p">||</span> <span class="s">'db_tareas'</span>
+<span class="p">});</span>
+
+<span class="v">connection</span><span class="p">.</span><span class="f">connect</span><span class="p">((</span><span class="v">err</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="v">err</span><span class="p">) {</span>
+    <span class="v">console</span><span class="p">.</span><span class="f">error</span><span class="p">(</span><span class="s">'Error conectando a MySQL:'</span><span class="p">,</span> <span class="v">err</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="v">console</span><span class="p">.</span><span class="f">log</span><span class="p">(</span><span class="s">'Conectado a MySQL correctamente'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="v">module</span><span class="p">.</span><span class="v">exports</span> <span class="p">=</span> <span class="v">connection</span><span class="p">;</span></pre>
+      </div>
+      <div class="info-box">
+        <strong>require('dotenv').config()</strong> carga las variables del archivo .env en <strong>process.env</strong> para que podamos usarlas de forma segura.
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 6 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">6</div>
+      <h2>Crear el servidor y las rutas — index.js</h2>
+    </div>
+    <div class="step-body">
+      <p>Crea el archivo <strong>index.js</strong>. Este es el archivo principal. Aqui configuramos Express y definimos todos los endpoints de la API.</p>
+
+      <p><strong>Primero:</strong> importa las dependencias y crea la app</p>
+      <div class="no-copy-notice">
+        &#9888; El codigo debe escribirse a mano — la copia esta desactivada
+      </div>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          index.js — Configuracion inicial
+        </div>
+        <pre>
+<span class="k">const</span> <span class="v">express</span> <span class="p">=</span> <span class="f">require</span><span class="p">(</span><span class="s">'express'</span><span class="p">);</span>
+<span class="k">const</span> <span class="v">db</span>      <span class="p">=</span> <span class="f">require</span><span class="p">(</span><span class="s">'./db'</span><span class="p">);</span>
+
+<span class="k">const</span> <span class="v">app</span> <span class="p">=</span> <span class="f">express</span><span class="p">();</span>
+<span class="v">app</span><span class="p">.</span><span class="f">use</span><span class="p">(</span><span class="v">express</span><span class="p">.</span><span class="f">json</span><span class="p">());</span></pre>
+      </div>
+      <div class="info-box">
+        <strong>express.json()</strong> permite que el servidor entienda el cuerpo de las peticiones en formato JSON (necesario para POST y PUT).
+      </div>
+
+      <p><strong>Segundo:</strong> ruta GET para obtener todas las tareas</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          index.js — GET /tareas
+        </div>
+        <pre>
+<span class="c">// GET - Obtener todas las tareas</span>
+<span class="v">app</span><span class="p">.</span><span class="f">get</span><span class="p">(</span><span class="s">'/tareas'</span><span class="p">,</span> <span class="p">(</span><span class="v">req</span><span class="p">,</span> <span class="v">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="v">db</span><span class="p">.</span><span class="f">query</span><span class="p">(</span><span class="s">'SELECT * FROM tareas'</span><span class="p">,</span> <span class="p">(</span><span class="v">err</span><span class="p">,</span> <span class="v">results</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="v">err</span><span class="p">)</span> <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">500</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">error</span><span class="p">:</span> <span class="v">err</span><span class="p">.</span><span class="v">message</span> <span class="p">});</span>
+    <span class="v">res</span><span class="p">.</span><span class="f">json</span><span class="p">(</span><span class="v">results</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">});</span></pre>
+      </div>
+
+      <p><strong>Tercero:</strong> ruta GET para obtener una tarea por ID</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          index.js — GET /tareas/:id
+        </div>
+        <pre>
+<span class="c">// GET - Obtener una tarea por ID</span>
+<span class="v">app</span><span class="p">.</span><span class="f">get</span><span class="p">(</span><span class="s">'/tareas/:id'</span><span class="p">,</span> <span class="p">(</span><span class="v">req</span><span class="p">,</span> <span class="v">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="v">db</span><span class="p">.</span><span class="f">query</span><span class="p">(</span>
+    <span class="s">'SELECT * FROM tareas WHERE id = ?'</span><span class="p">,</span>
+    <span class="p">[</span><span class="v">req</span><span class="p">.</span><span class="v">params</span><span class="p">.</span><span class="v">id</span><span class="p">],</span>
+    <span class="p">(</span><span class="v">err</span><span class="p">,</span> <span class="v">results</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="v">err</span><span class="p">)</span> <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">500</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">error</span><span class="p">:</span> <span class="v">err</span><span class="p">.</span><span class="v">message</span> <span class="p">});</span>
+      <span class="k">if</span> <span class="p">(</span><span class="v">results</span><span class="p">.</span><span class="v">length</span> <span class="p">===</span> <span class="n">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">404</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">mensaje</span><span class="p">:</span> <span class="s">'Tarea no encontrada'</span> <span class="p">});</span>
+      <span class="v">res</span><span class="p">.</span><span class="f">json</span><span class="p">(</span><span class="v">results</span><span class="p">[</span><span class="n">0</span><span class="p">]);</span>
+    <span class="p">}</span>
+  <span class="p">);</span>
+<span class="p">});</span></pre>
+      </div>
+      <div class="info-box">
+        El <strong>?</strong> en la query SQL es un parametro seguro (prepared statement). Evita inyecciones SQL. El valor se pasa en el arreglo <strong>[req.params.id]</strong>.
+      </div>
+
+      <p><strong>Cuarto:</strong> ruta POST para crear una tarea</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          index.js — POST /tareas
+        </div>
+        <pre>
+<span class="c">// POST - Crear una tarea</span>
+<span class="v">app</span><span class="p">.</span><span class="f">post</span><span class="p">(</span><span class="s">'/tareas'</span><span class="p">,</span> <span class="p">(</span><span class="v">req</span><span class="p">,</span> <span class="v">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="k">const</span> <span class="p">{</span> <span class="v">titulo</span><span class="p">,</span> <span class="v">descripcion</span> <span class="p">}</span> <span class="p">=</span> <span class="v">req</span><span class="p">.</span><span class="v">body</span><span class="p">;</span>
+  <span class="v">db</span><span class="p">.</span><span class="f">query</span><span class="p">(</span>
+    <span class="s">'INSERT INTO tareas (titulo, descripcion) VALUES (?, ?)'</span><span class="p">,</span>
+    <span class="p">[</span><span class="v">titulo</span><span class="p">,</span> <span class="v">descripcion</span><span class="p">],</span>
+    <span class="p">(</span><span class="v">err</span><span class="p">,</span> <span class="v">result</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="v">err</span><span class="p">)</span> <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">500</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">error</span><span class="p">:</span> <span class="v">err</span><span class="p">.</span><span class="v">message</span> <span class="p">});</span>
+      <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">201</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">mensaje</span><span class="p">:</span> <span class="s">'Tarea creada'</span><span class="p">,</span> <span class="v">id</span><span class="p">:</span> <span class="v">result</span><span class="p">.</span><span class="v">insertId</span> <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">);</span>
+<span class="p">});</span></pre>
+      </div>
+
+      <p><strong>Quinto:</strong> ruta PUT para actualizar una tarea</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          index.js — PUT /tareas/:id
+        </div>
+        <pre>
+<span class="c">// PUT - Actualizar una tarea</span>
+<span class="v">app</span><span class="p">.</span><span class="f">put</span><span class="p">(</span><span class="s">'/tareas/:id'</span><span class="p">,</span> <span class="p">(</span><span class="v">req</span><span class="p">,</span> <span class="v">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="k">const</span> <span class="p">{</span> <span class="v">titulo</span><span class="p">,</span> <span class="v">descripcion</span><span class="p">,</span> <span class="v">completada</span> <span class="p">}</span> <span class="p">=</span> <span class="v">req</span><span class="p">.</span><span class="v">body</span><span class="p">;</span>
+  <span class="v">db</span><span class="p">.</span><span class="f">query</span><span class="p">(</span>
+    <span class="s">'UPDATE tareas SET titulo = ?, descripcion = ?, completada = ? WHERE id = ?'</span><span class="p">,</span>
+    <span class="p">[</span><span class="v">titulo</span><span class="p">,</span> <span class="v">descripcion</span><span class="p">,</span> <span class="v">completada</span><span class="p">,</span> <span class="v">req</span><span class="p">.</span><span class="v">params</span><span class="p">.</span><span class="v">id</span><span class="p">],</span>
+    <span class="p">(</span><span class="v">err</span><span class="p">,</span> <span class="v">result</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="v">err</span><span class="p">)</span> <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">500</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">error</span><span class="p">:</span> <span class="v">err</span><span class="p">.</span><span class="v">message</span> <span class="p">});</span>
+      <span class="k">if</span> <span class="p">(</span><span class="v">result</span><span class="p">.</span><span class="v">affectedRows</span> <span class="p">===</span> <span class="n">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">404</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">mensaje</span><span class="p">:</span> <span class="s">'Tarea no encontrada'</span> <span class="p">});</span>
+      <span class="v">res</span><span class="p">.</span><span class="f">json</span><span class="p">({</span> <span class="v">mensaje</span><span class="p">:</span> <span class="s">'Tarea actualizada'</span> <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">);</span>
+<span class="p">});</span></pre>
+      </div>
+
+      <p><strong>Sexto:</strong> ruta DELETE para eliminar una tarea</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          index.js — DELETE /tareas/:id
+        </div>
+        <pre>
+<span class="c">// DELETE - Eliminar una tarea</span>
+<span class="v">app</span><span class="p">.</span><span class="f">delete</span><span class="p">(</span><span class="s">'/tareas/:id'</span><span class="p">,</span> <span class="p">(</span><span class="v">req</span><span class="p">,</span> <span class="v">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="v">db</span><span class="p">.</span><span class="f">query</span><span class="p">(</span>
+    <span class="s">'DELETE FROM tareas WHERE id = ?'</span><span class="p">,</span>
+    <span class="p">[</span><span class="v">req</span><span class="p">.</span><span class="v">params</span><span class="p">.</span><span class="v">id</span><span class="p">],</span>
+    <span class="p">(</span><span class="v">err</span><span class="p">,</span> <span class="v">result</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="v">err</span><span class="p">)</span> <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">500</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">error</span><span class="p">:</span> <span class="v">err</span><span class="p">.</span><span class="v">message</span> <span class="p">});</span>
+      <span class="k">if</span> <span class="p">(</span><span class="v">result</span><span class="p">.</span><span class="v">affectedRows</span> <span class="p">===</span> <span class="n">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="v">res</span><span class="p">.</span><span class="f">status</span><span class="p">(</span><span class="n">404</span><span class="p">).</span><span class="f">json</span><span class="p">({</span> <span class="v">mensaje</span><span class="p">:</span> <span class="s">'Tarea no encontrada'</span> <span class="p">});</span>
+      <span class="v">res</span><span class="p">.</span><span class="f">json</span><span class="p">({</span> <span class="v">mensaje</span><span class="p">:</span> <span class="s">'Tarea eliminada'</span> <span class="p">});</span>
+    <span class="p">}</span>
+  <span class="p">);</span>
+<span class="p">});</span></pre>
+      </div>
+
+      <p><strong>Septimo:</strong> iniciar el servidor al final del archivo</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          index.js — Iniciar servidor
+        </div>
+        <pre>
+<span class="k">const</span> <span class="v">PORT</span> <span class="p">=</span> <span class="n">3000</span><span class="p">;</span>
+<span class="v">app</span><span class="p">.</span><span class="f">listen</span><span class="p">(</span><span class="v">PORT</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+  <span class="v">console</span><span class="p">.</span><span class="f">log</span><span class="p">(</span><span class="s">`Servidor corriendo en http://localhost:<span class="p">${</span><span class="v">PORT</span><span class="p">}</span>`</span><span class="p">);</span>
+<span class="p">});</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 7 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">7</div>
+      <h2>Estructura final del proyecto</h2>
+    </div>
+    <div class="step-body">
+      <p>Al terminar, tu proyecto debe tener esta estructura de archivos:</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          estructura del proyecto
+        </div>
+        <pre>
+<span class="v">api-tareas</span><span class="p">/</span>
+<span class="p">├──</span> <span class="v">node_modules</span><span class="p">/</span>
+<span class="p">├──</span> <span class="v">.env</span>
+<span class="p">├──</span> <span class="v">db.js</span>
+<span class="p">├──</span> <span class="v">index.js</span>
+<span class="p">└──</span> <span class="v">package.json</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 8 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-number">8</div>
+      <h2>Correr el servidor y probarlo</h2>
+    </div>
+    <div class="step-body">
+      <p>Inicia el servidor desde la terminal:</p>
+      <div class="cmd">npm start</div>
+      <p>Deberias ver en consola:</p>
+      <div class="code-block">
+        <div class="code-label">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          salida esperada
+        </div>
+        <pre>
+<span class="n">Conectado a MySQL correctamente</span>
+<span class="n">Servidor corriendo en http://localhost:3000</span></pre>
+      </div>
+      <p>Ahora puedes probar la API. Puedes usar <strong>Postman</strong>, <strong>Thunder Client</strong> (extension de VS Code) o <strong>curl</strong>.</p>
+      <p>Ejemplo — crear una tarea con curl:</p>
+      <div class="cmd">curl -X POST http://localhost:3000/tareas -H "Content-Type: application/json" -d "{\"titulo\":\"Mi primera tarea\",\"descripcion\":\"Descripcion de prueba\"}"</div>
+      <p>Ejemplo — obtener todas las tareas:</p>
+      <div class="cmd">curl http://localhost:3000/tareas</div>
+      <div class="info-box">
+        Si usas Postman, importa las rutas manualmente. Recuerda siempre agregar el header <strong>Content-Type: application/json</strong> en las peticiones POST y PUT.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Guia de practica — API REST con Node.js y MySQL &mdash; Escribe el codigo, no lo copies.
+</footer>
+
+<script>
+  // Bloquear copia con teclado y menu contextual en bloques de codigo
+  document.querySelectorAll('.code-block, pre, .cmd').forEach(el => {
+    el.addEventListener('copy',        e => e.preventDefault());
+    el.addEventListener('cut',         e => e.preventDefault());
+    el.addEventListener('contextmenu', e => e.preventDefault());
+    el.addEventListener('selectstart', e => e.preventDefault());
+    el.addEventListener('dragstart',   e => e.preventDefault());
+  });
+
+  // Bloquear Ctrl+A global para no seleccionar todo
+  document.addEventListener('keydown', e => {
+    const tag = document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'c' || e.key === 'u')) {
+      e.preventDefault();
+    }
+  });
+</script>
+
+</body>
+</html>
